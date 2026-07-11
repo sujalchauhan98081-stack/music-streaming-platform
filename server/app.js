@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import testRoutes from "./routes/test.routes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -32,6 +33,7 @@ if (process.env.NODE_ENV === "development") {
 
 // --- Routes ---
 app.use("/api/v1/test", testRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // --- Error Handling (must be LAST) ---
 app.use(notFound);

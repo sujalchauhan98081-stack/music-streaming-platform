@@ -1,0 +1,57 @@
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: 6,
+      select: false, // never return password field by default in queries
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
+    refreshToken: {
+      type: String,
+      select: false,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true } // adds createdAt, updatedAt automatically
+);
+
+// --- Hash password before saving ---
+userSchema.pre("save", async function (next) {
+  // only hash if password was modified (avoids re-hashing on unrelated updates)
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// --- Instance method to compare passwords during login ---
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+const User = mongoose.model("User", userSchema);
+export default User;
