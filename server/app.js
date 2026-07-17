@@ -7,6 +7,9 @@ import morgan from "morgan";
 import testRoutes from "./routes/test.routes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.routes.js";
+import artistRoutes from "./routes/artist.routes.js";
+import albumRoutes from "./routes/album.routes.js";
+import songRoutes from "./routes/song.routes.js";
 
 const app = express();
 
@@ -34,6 +37,9 @@ if (process.env.NODE_ENV === "development") {
 // --- Routes ---
 app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/artists", artistRoutes);
+app.use("/api/v1/albums", albumRoutes);
+app.use("/api/v1/songs", songRoutes);
 
 // --- Error Handling (must be LAST) ---
 app.use(notFound);
