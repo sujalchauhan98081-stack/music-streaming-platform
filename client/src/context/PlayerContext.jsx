@@ -2,6 +2,8 @@ import { createContext, useRef, useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { incrementPlayCountApi } from "../api/songApi";
 
+import { logHistoryApi } from "../api/historyApi";
+
 export const PlayerContext = createContext();
 
 // Repeat modes cycle: off -> all -> one -> off
@@ -37,6 +39,7 @@ export const PlayerProvider = ({ children }) => {
 
     // Fire-and-forget play count increment — doesn't block playback if it fails
     incrementPlayCountApi(currentSong._id).catch(() => {});
+    logHistoryApi(currentSong._id).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSong?._id]);
 

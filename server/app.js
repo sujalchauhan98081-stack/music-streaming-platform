@@ -10,6 +10,8 @@ import authRoutes from "./routes/auth.routes.js";
 import artistRoutes from "./routes/artist.routes.js";
 import albumRoutes from "./routes/album.routes.js";
 import songRoutes from "./routes/song.routes.js";
+import playlistRoutes from "./routes/playlist.routes.js";
+import historyRoutes from "./routes/history.routes.js";
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/artists", artistRoutes);
 app.use("/api/v1/albums", albumRoutes);
 app.use("/api/v1/songs", songRoutes);
+app.use("/api/v1/playlists", playlistRoutes);
+app.use("/api/v1/history", historyRoutes);
 
 // --- Error Handling (must be LAST) ---
 app.use(notFound);

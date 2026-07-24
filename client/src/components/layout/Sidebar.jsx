@@ -1,16 +1,28 @@
-import { Home, Search, Library, PlusSquare, Heart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Home, Search, Library as LibraryIcon, PlusSquare, Heart } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+import { createPlaylistApi } from "../../api/playlistApi";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   const navItems = [
-    { icon: <Home size={22} />, label: "Home" },
-    { icon: <Search size={22} />, label: "Search" },
-    { icon: <Library size={22} />, label: "Your Library" },
+    { icon: <Home size={22} />, label: "Home", to: "/" },
+    { icon: <Search size={22} />, label: "Search", to: "/search" },
+    { icon: <LibraryIcon size={22} />, label: "Your Library", to: "/library" },
   ];
 
-  const libraryItems = [
-    { icon: <PlusSquare size={20} />, label: "Create Playlist" },
-    { icon: <Heart size={20} />, label: "Liked Songs" },
-  ];
+  const handleQuickCreate = async () => {
+    try {
+      const { data } = await createPlaylistApi({ name: "New Playlist", isPublic: true });
+      toast.success("Playlist created!");
+      navigate(`/playlist/${data.playlist._id}`);
+    } catch (err) {
+      toast.error("Failed to create playlist");
+    }
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-64 h-screen bg-black p-6 gap-6 sticky top-0">
@@ -18,29 +30,44 @@ const Sidebar = () => {
 
       <nav className="flex flex-col gap-4">
         {navItems.map((item) => (
-          <button
+          <Link
             key={item.label}
+            to={item.to}
             className="flex items-center gap-4 text-textSecondary hover:text-textPrimary transition-colors font-medium"
           >
             {item.icon}
             {item.label}
-          </button>
+          </Link>
         ))}
       </nav>
 
       <div className="border-t border-surfaceHover my-2" />
 
       <nav className="flex flex-col gap-4">
-        {libraryItems.map((item) => (
-          <button
-            key={item.label}
-            className="flex items-center gap-4 text-textSecondary hover:text-textPrimary transition-colors font-medium"
-          >
-            {item.icon}
-            {item.label}
-          </button>
-        ))}
+        <button
+          onClick={handleQuickCreate}
+          className="flex items-center gap-4 text-textSecondary hover:text-textPrimary transition-colors font-medium"
+        >
+          <PlusSquare size={20} />
+          Create Playlist
+        </button>
+        <Link
+          to="/liked-songs"
+          className="flex items-center gap-4 text-textSecondary hover:text-textPrimary transition-colors font-medium"
+        >
+          <Heart size={20} />
+          Liked Songs
+        </Link>
       </nav>
+
+      <div className="mt-auto">
+        <button
+          onClick={logout}
+          className="text-sm text-textSecondary hover:text-textPrimary"
+        >
+          Log Out
+        </button>
+      </div>
     </aside>
   );
 };

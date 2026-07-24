@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    likedSongs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Song",
+      },
+    ],
   },
   { timestamps: true } // adds createdAt, updatedAt automatically
 );
