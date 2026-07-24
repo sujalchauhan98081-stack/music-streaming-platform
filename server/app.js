@@ -12,6 +12,7 @@ import albumRoutes from "./routes/album.routes.js";
 import songRoutes from "./routes/song.routes.js";
 import playlistRoutes from "./routes/playlist.routes.js";
 import historyRoutes from "./routes/history.routes.js";
+import searchRoutes from "./routes/search.routes.js";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/v1/albums", albumRoutes);
 app.use("/api/v1/songs", songRoutes);
 app.use("/api/v1/playlists", playlistRoutes);
 app.use("/api/v1/history", historyRoutes);
+app.use("/api/v1/search", searchRoutes);
 
 // --- Error Handling (must be LAST) ---
 app.use(notFound);

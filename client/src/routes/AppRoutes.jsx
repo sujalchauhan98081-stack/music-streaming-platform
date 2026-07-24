@@ -8,6 +8,7 @@ import LikedSongs from "../pages/LikedSongs";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
+import Search from "../pages/Search";
 
 const AppRoutes = () => {
   return (
@@ -51,6 +52,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <LikedSongs />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/search"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Search />
             </MainLayout>
           </ProtectedRoute>
         }
