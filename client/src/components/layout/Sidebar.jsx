@@ -3,6 +3,7 @@ import { Home, Search, Library as LibraryIcon, PlusSquare, Heart } from "lucide-
 import { useAuth } from "../../hooks/useAuth";
 import { createPlaylistApi } from "../../api/playlistApi";
 import toast from "react-hot-toast";
+import { Sparkles } from "lucide-react";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Sidebar = () => {
     { icon: <Home size={22} />, label: "Home", to: "/" },
     { icon: <Search size={22} />, label: "Search", to: "/search" },
     { icon: <LibraryIcon size={22} />, label: "Your Library", to: "/library" },
+    { icon: <Sparkles size={22} />, label: "AI Chat", to: "/ai-chat" },
   ];
 
   const handleQuickCreate = async () => {

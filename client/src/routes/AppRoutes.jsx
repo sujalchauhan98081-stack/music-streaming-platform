@@ -9,6 +9,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
+import AiChat from "../pages/AiChat";
 
 const AppRoutes = () => {
   return (
@@ -62,6 +63,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <Search />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-chat"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <AiChat />
             </MainLayout>
           </ProtectedRoute>
         }
