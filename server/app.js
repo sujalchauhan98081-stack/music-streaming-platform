@@ -14,6 +14,7 @@ import playlistRoutes from "./routes/playlist.routes.js";
 import historyRoutes from "./routes/history.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/v1/playlists", playlistRoutes);
 app.use("/api/v1/history", historyRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/ai", aiRoutes);
+app.use("/api/v1/admin", adminRoutes);
 // --- Error Handling (must be LAST) ---
 app.use(notFound);
 app.use(errorHandler);

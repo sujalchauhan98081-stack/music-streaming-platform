@@ -10,6 +10,13 @@ import Register from "../pages/auth/Register";
 import NotFound from "../pages/NotFound";
 import Search from "../pages/Search";
 import AiChat from "../pages/AiChat";
+import AdminRoute from "./AdminRoute";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminSongs from "../pages/admin/AdminSongs";
+import AdminArtists from "../pages/admin/AdminArtists";
+import AdminAlbums from "../pages/admin/AdminAlbums";
+import AdminUsers from "../pages/admin/AdminUsers";
 
 const AppRoutes = () => {
   return (
@@ -75,6 +82,56 @@ const AppRoutes = () => {
               <AiChat />
             </MainLayout>
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <AdminDashboard />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/songs"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <AdminSongs />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/artists"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <AdminArtists />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/albums"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <AdminAlbums />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <AdminUsers />
+            </AdminLayout>
+          </AdminRoute>
         }
       />
 
