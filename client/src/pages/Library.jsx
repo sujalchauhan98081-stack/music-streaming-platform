@@ -29,7 +29,18 @@ const Library = () => {
     setPlaylists((prev) => [newPlaylist, ...prev]);
   };
 
-  if (loading) return <p className="text-textSecondary pt-6">Loading library...</p>;
+  if (loading) {
+    return (
+      <div className="pt-6">
+        <h2 className="text-3xl font-bold mb-6">Your Library</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-6">

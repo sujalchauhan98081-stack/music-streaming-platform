@@ -1,7 +1,6 @@
 import { createContext, useRef, useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { incrementPlayCountApi } from "../api/songApi";
-
 import { logHistoryApi } from "../api/historyApi";
 
 export const PlayerContext = createContext();
@@ -11,6 +10,8 @@ const REPEAT_MODES = ["off", "all", "one"];
 
 export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(new Audio());
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
 
   const [queue, setQueue] = useState([]); // array of song objects
   const [currentIndex, setCurrentIndex] = useState(-1); // index into queue
@@ -24,6 +25,32 @@ export const PlayerProvider = ({ children }) => {
 
   const currentSong = currentIndex >= 0 ? queue[currentIndex] : null;
 
+  // --- Create the Web Audio graph ONCE, for the entire app lifetime ---
+  // This must never re-run — browsers only allow one MediaElementSourceNode
+  // per <audio> element, ever. Creating it here (not inside AudioVisualizer,
+  // which mounts/unmounts with the fullscreen player) guarantees that.
+  useEffect(() => {
+    // Guard against React StrictMode's double-invoke in development,
+    // which would otherwise try to create a second MediaElementSourceNode
+    // on the same <audio> element and crash the whole app
+    if (audioContextRef.current) return;
+
+    const audio = audioRef.current;
+    audio.crossOrigin = "anonymous"; // required for Cloudinary-hosted audio + Web Audio analysis
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioContext = new AudioContextClass();
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 64;
+
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    audioContextRef.current = audioContext;
+    analyserRef.current = analyser;
+  }, []);
+
   // --- Load a new song into the audio element whenever currentSong changes ---
   useEffect(() => {
     if (!currentSong) return;
@@ -31,6 +58,13 @@ export const PlayerProvider = ({ children }) => {
     const audio = audioRef.current;
     audio.src = currentSong.audioUrl;
     audio.volume = volume;
+
+    // Browsers suspend new/existing AudioContexts until a user gesture resumes them —
+    // since playSong is always called from a click handler, this is a safe place to resume
+    if (audioContextRef.current?.state === "suspended") {
+      audioContextRef.current.resume();
+    }
+
     audio.play().catch(() => {
       // Autoplay can be blocked by browsers if not triggered by direct user interaction —
       // we silently ignore here since play() was already called from a click handler
@@ -184,6 +218,9 @@ export const PlayerProvider = ({ children }) => {
         repeatMode,
         isFullscreenOpen,
         setIsFullscreenOpen,
+        audioElement: audioRef.current,
+        analyserNode: analyserRef.current,
+        audioContext: audioContextRef.current,
         playSong,
         togglePlayPause,
         playNext,
