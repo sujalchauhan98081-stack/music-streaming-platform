@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Heart } from "lucide-react";
 import toast from "react-hot-toast";
 import { getAllSongsApi } from "../api/songApi";
 import { getLikedSongsApi, toggleLikeSongApi } from "../api/playlistApi";
@@ -9,7 +8,8 @@ import { usePlayer } from "../hooks/usePlayer";
 import MoodSelector from "../components/ai/MoodSelector";
 import RecommendationSection from "../components/ai/RecommendationSection";
 import SkeletonCard from "../components/ui/SkeletonCard";
-import { fadeInUp, staggerContainer } from "../animations/variants";
+import SongCard from "../components/song/SongCard";
+import { staggerContainer } from "../animations/variants";
 
 const Home = () => {
   const [songs, setSongs] = useState([]);
@@ -136,7 +136,7 @@ const Home = () => {
         aiSuggestions={recommendationSuggestions}
       />
 
-      {/* --- All Songs Grid (staggered entrance animation) --- */}
+      {/* --- All Songs Grid (staggered entrance animation + memoized cards) --- */}
       {songs.length === 0 ? (
         <p className="text-textSecondary">
           No songs uploaded yet — use the admin API from Phase 6 to add some.
@@ -155,45 +155,14 @@ const Home = () => {
               const isLiked = likedSongIds.has(song._id);
 
               return (
-                <motion.div
+                <SongCard
                   key={song._id}
-                  variants={fadeInUp}
-                  onClick={() => playSong(song, songs)}
-                  className="bg-surface hover:bg-surfaceHover p-4 rounded-md cursor-pointer group relative transition-colors"
-                >
-                  <img
-                    src={song.coverImage || "/placeholder-cover.png"}
-                    alt={song.title}
-                    className="w-full aspect-square object-cover rounded-md mb-3"
-                  />
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">{song.title}</p>
-                      <p className="text-sm text-textSecondary truncate">
-                        {song.artist?.name || "Unknown Artist"}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={(e) => handleToggleLike(e, song._id)}
-                      className={`shrink-0 ${
-                        isLiked
-                          ? "text-primary"
-                          : "text-textSecondary opacity-0 group-hover:opacity-100"
-                      }`}
-                    >
-                      <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
-                    </button>
-                  </div>
-
-                  <div
-                    className={`absolute bottom-24 right-6 bg-primary rounded-full p-3 shadow-lg transition-opacity ${
-                      isCurrentlyPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                    }`}
-                  >
-                    <Play size={16} fill="black" className="text-black" />
-                  </div>
-                </motion.div>
+                  song={song}
+                  isCurrentlyPlaying={isCurrentlyPlaying}
+                  isLiked={isLiked}
+                  onPlay={() => playSong(song, songs)}
+                  onToggleLike={(e) => handleToggleLike(e, song._id)}
+                />
               );
             })}
           </motion.div>

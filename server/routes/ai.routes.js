@@ -11,8 +11,10 @@ import {
   chatValidator,
   smartSearchValidator,
 } from "../validators/ai.validator.js";
+import { aiLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
+router.use(aiLimiter);
 
 router.get("/recommendations", protect, getRecommendations);
 router.post("/mood-playlist", protect, moodValidator, getMoodPlaylist);

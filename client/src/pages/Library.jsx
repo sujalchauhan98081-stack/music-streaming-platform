@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Heart } from "lucide-react";
-import { getMyPlaylistsApi } from "../api/playlistApi";
+import {
+  Plus, Heart, Trash2
+} from "lucide-react";
+import { getMyPlaylistsApi, deletePlaylistApi } from "../api/playlistApi";
 import CreatePlaylistModal from "../components/playlist/CreatePlaylistModal";
 import toast from "react-hot-toast";
+import SkeletonCard from "../components/ui/SkeletonCard";
 
 const Library = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -27,6 +30,20 @@ const Library = () => {
 
   const handleCreated = (newPlaylist) => {
     setPlaylists((prev) => [newPlaylist, ...prev]);
+  };
+  const handleDelete = async (e, playlistId, playlistName) => {
+    e.preventDefault(); // prevent the <Link> navigation from firing
+    e.stopPropagation();
+
+    if (!window.confirm(`Delete "${playlistName}"? This cannot be undone.`)) return;
+
+    try {
+      await deletePlaylistApi(playlistId);
+      toast.success("Playlist deleted");
+      setPlaylists((prev) => prev.filter((p) => p._id !== playlistId));
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete playlist");
+    }
   };
 
   if (loading) {
@@ -68,7 +85,7 @@ const Library = () => {
           <Link
             key={playlist._id}
             to={`/playlist/${playlist._id}`}
-            className="bg-surface hover:bg-surfaceHover p-4 rounded-md transition-colors"
+            className="bg-surface hover:bg-surfaceHover p-4 rounded-md transition-colors relative group"
           >
             <div className="w-full aspect-square bg-surfaceHover rounded-md mb-3 flex items-center justify-center text-textSecondary text-sm">
               {playlist.coverImage ? (
@@ -83,6 +100,14 @@ const Library = () => {
             </div>
             <p className="font-medium truncate">{playlist.name}</p>
             <p className="text-sm text-textSecondary">{playlist.songs.length} songs</p>
+
+            <button
+              onClick={(e) => handleDelete(e, playlist._id, playlist.name)}
+              className="absolute top-2 right-2 bg-black/60 text-textSecondary hover:text-red-500 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              title="Delete playlist"
+            >
+              <Trash2 size={16} />
+            </button>
           </Link>
         ))}
       </div>

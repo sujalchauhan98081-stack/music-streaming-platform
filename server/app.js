@@ -15,11 +15,18 @@ import historyRoutes from "./routes/history.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import aiRoutes from "./routes/ai.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import { sanitizeRequest } from "./middleware/sanitize.js";
+import { generalLimiter, authLimiter, aiLimiter } from "./middleware/rateLimiter.js";
 
 const app = express();
 
 // --- Security Middleware ---
-app.use(helmet()); // sets secure HTTP headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }, // needed so Cloudinary-hosted images/audio load correctly in <img>/<audio> tags
+    contentSecurityPolicy: false, // disabled for now — a full CSP requires careful tuning per external resource (Cloudinary, Groq, fonts); revisit before real production deployment
+  })
+); // sets secure HTTP headers
 
 // --- CORS Configuration ---
 app.use(
@@ -28,10 +35,13 @@ app.use(
     credentials: true, // required for cookies (refresh tokens later)
   })
 );
+app.use(generalLimiter);
+
 
 // --- Body Parsers ---
 app.use(express.json()); // parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // parse form bodies
+app.use(sanitizeRequest); // strips $ and . from req.body/query/params to prevent NoSQL injection
 app.use(cookieParser()); // parse cookies
 
 // --- Logging (dev only) ---
