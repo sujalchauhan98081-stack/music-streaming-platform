@@ -62,14 +62,7 @@ const Sidebar = () => {
         </Link>
       </nav>
 
-      <div className="mt-auto">
-        <button
-          onClick={logout}
-          className="text-sm text-textSecondary hover:text-textPrimary"
-        >
-          Log Out
-        </button>
-      </div>
+      
       <CreatePlaylistModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

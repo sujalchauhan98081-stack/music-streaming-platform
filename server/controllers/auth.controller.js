@@ -11,6 +11,53 @@ const refreshTokenCookieOptions = {
   sameSite: "strict", // CSRF protection
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
 };
+// @route  PUT /api/v1/auth/profile
+export const updateProfile = asyncHandler(async (req, res) => {
+  const { name, email } = req.body;
+
+  if (email) {
+    const existingUser = await User.findOne({ email, _id: { $ne: req.user._id } });
+    if (existingUser) {
+      const error = new Error("Email is already in use by another account");
+      error.statusCode = 409;
+      throw error;
+    }
+  }
+
+  const user = await User.findById(req.user._id);
+  if (name !== undefined) user.name = name;
+  if (email !== undefined) user.email = email;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+});
+
+// @route  PUT /api/v1/auth/change-password
+export const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user._id).select("+password");
+
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    const error = new Error("Current password is incorrect");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  user.password = newPassword; // the pre("save") hook (Phase 3) will hash this automatically
+  await user.save();
+
+  res.status(200).json({ success: true, message: "Password updated successfully" });
+});
 
 // @route  POST /api/v1/auth/register
 export const registerUser = asyncHandler(async (req, res) => {

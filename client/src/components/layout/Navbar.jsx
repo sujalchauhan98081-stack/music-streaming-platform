@@ -1,23 +1,45 @@
-import { ChevronLeft, ChevronRight, User } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, LogOut } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-md">
       <div className="flex items-center gap-3">
-        <button className="p-2 rounded-full bg-surface hover:bg-surfaceHover">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full bg-surface hover:bg-surfaceHover"
+          title="Go back"
+        >
           <ChevronLeft size={20} />
         </button>
-        <button className="p-2 rounded-full bg-surface hover:bg-surfaceHover">
+        <button
+          onClick={() => navigate(1)}
+          className="p-2 rounded-full bg-surface hover:bg-surfaceHover"
+          title="Go forward"
+        >
           <ChevronRight size={20} />
         </button>
       </div>
 
-      <div className="flex items-center gap-4">
-        <button className="px-4 py-2 rounded-full bg-primary text-black font-semibold text-sm hover:scale-105 transition-transform">
-          Upgrade
-        </button>
-        <button className="w-8 h-8 rounded-full bg-surface flex items-center justify-center hover:bg-surfaceHover">
+      <div className="flex items-center gap-3">
+        <Link
+          to="/profile"
+          className="w-8 h-8 rounded-full bg-surface flex items-center justify-center hover:bg-surfaceHover"
+          title="Profile"
+        >
           <User size={18} />
+        </Link>
+        <button
+          onClick={logout}
+          className="flex items-center gap-2 text-sm text-textSecondary hover:text-textPrimary px-3 py-2 rounded-full hover:bg-surface transition-colors"
+          title="Log out"
+        >
+          <LogOut size={16} />
+          Log Out
         </button>
       </div>
     </header>

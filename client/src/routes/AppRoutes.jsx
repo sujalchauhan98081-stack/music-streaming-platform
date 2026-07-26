@@ -28,6 +28,7 @@ const AdminSongs = lazy(() => import("../pages/admin/AdminSongs"));
 const AdminArtists = lazy(() => import("../pages/admin/AdminArtists"));
 const AdminAlbums = lazy(() => import("../pages/admin/AdminAlbums"));
 const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
+const Profile = lazy(() => import("../pages/Profile"));
 
 const AppRoutes = () => {
   return (
@@ -42,6 +43,16 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <MainLayout>
                 <Home />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Profile />
               </MainLayout>
             </ProtectedRoute>
           }
