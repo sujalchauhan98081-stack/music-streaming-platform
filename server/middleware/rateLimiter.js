@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 // General API limiter — generous, just to blunt basic abuse/scraping
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // 300 requests per IP per window
+  max: 300, // 300 requests per IP per window
   standardHeaders: true, // return rate limit info in RateLimit-* headers
   legacyHeaders: false, // disable deprecated X-RateLimit-* headers
   message: {
