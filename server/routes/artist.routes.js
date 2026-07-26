@@ -3,6 +3,7 @@ import {
   createArtist,
   getAllArtists,
   getArtistById,
+  getSongsByArtist,
   updateArtist,
   deleteArtist,
 } from "../controllers/artist.controller.js";
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.get("/", getAllArtists);
 router.get("/:id", getArtistById);
+router.get("/:id/songs", getSongsByArtist);
 
 router.post(
   "/",

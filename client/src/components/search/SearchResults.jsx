@@ -51,14 +51,14 @@ const SearchResults = ({ results }) => {
           <h3 className="text-xl font-bold mb-4">Artists</h3>
           <div className="flex gap-4 flex-wrap">
             {artists.map((artist) => (
-              <div key={artist._id} className="w-32 text-center">
+              <Link key={artist._id} to={`/artist/${artist._id}`} className="w-32 text-center group">
                 <img
                   src={artist.image || "/placeholder-cover.png"}
                   alt={artist.name}
-                  className="w-32 h-32 rounded-full object-cover mb-2"
+                  className="w-32 h-32 rounded-full object-cover mb-2 group-hover:opacity-80 transition-opacity"
                 />
                 <p className="truncate font-medium">{artist.name}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -69,7 +69,11 @@ const SearchResults = ({ results }) => {
           <h3 className="text-xl font-bold mb-4">Albums</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {albums.map((album) => (
-              <div key={album._id} className="bg-surface hover:bg-surfaceHover p-4 rounded-md transition-colors">
+              <Link
+                key={album._id}
+                to={`/album/${album._id}`}
+                className="bg-surface hover:bg-surfaceHover p-4 rounded-md transition-colors"
+              >
                 <img
                   src={album.coverImage || "/placeholder-cover.png"}
                   alt={album.title}
@@ -79,11 +83,13 @@ const SearchResults = ({ results }) => {
                 <p className="text-sm text-textSecondary truncate">
                   {album.artist?.name || "Unknown Artist"}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
       )}
+
+      
     </div>
   );
 };

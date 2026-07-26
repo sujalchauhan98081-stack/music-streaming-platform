@@ -9,7 +9,12 @@ export const PlayerContext = createContext();
 const REPEAT_MODES = ["off", "all", "one"];
 
 export const PlayerProvider = ({ children }) => {
-  const audioRef = useRef(new Audio());
+  const audioRef = useRef((() => {
+    const audio = new Audio();
+    const savedVolume = localStorage.getItem("sonique_volume");
+    audio.volume = savedVolume !== null ? Number(savedVolume) : 0.8;
+    return audio;
+  })());
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
 
@@ -18,7 +23,11 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // current playback time in seconds
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.8);
+  const [volume, setVolume] = useState(() => {
+    // Lazy initializer — only runs once, on first mount, not on every re-render
+    const savedVolume = localStorage.getItem("sonique_volume");
+    return savedVolume !== null ? Number(savedVolume) : 0.8;
+  });
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState("off");
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
@@ -177,6 +186,7 @@ export const PlayerProvider = ({ children }) => {
   const changeVolume = useCallback((newVolume) => {
     audioRef.current.volume = newVolume;
     setVolume(newVolume);
+    localStorage.setItem("sonique_volume", newVolume.toString());
   }, []);
 
   const toggleShuffle = useCallback(() => setIsShuffled((prev) => !prev), []);

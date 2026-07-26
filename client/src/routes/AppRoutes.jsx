@@ -17,7 +17,10 @@ const AiChat = lazy(() => import("../pages/AiChat"));
 const Login = lazy(() => import("../pages/auth/Login"));
 const Register = lazy(() => import("../pages/auth/Register"));
 const NotFound = lazy(() => import("../pages/NotFound"));
-
+const RecentlyPlayed = lazy(() => import("../pages/RecentlyPlayed"));
+const MostPlayed = lazy(() => import("../pages/MostPlayed"));
+const ArtistProfile = lazy(() => import("../pages/ArtistProfile"));
+const AlbumDetail = lazy(() => import("../pages/AlbumDetail"));
 // Admin pages are especially worth lazy-loading — Recharts is a fairly
 // large dependency that regular (non-admin) users should never have to download
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
@@ -39,6 +42,26 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <MainLayout>
                 <Home />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/artist/:id"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <ArtistProfile />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/album/:id"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <AlbumDetail />
               </MainLayout>
             </ProtectedRoute>
           }
@@ -69,6 +92,26 @@ const AppRoutes = () => {
             <ProtectedRoute>
               <MainLayout>
                 <LikedSongs />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recently-played"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <RecentlyPlayed />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/most-played"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <MostPlayed />
               </MainLayout>
             </ProtectedRoute>
           }

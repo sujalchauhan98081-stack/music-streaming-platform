@@ -2,6 +2,17 @@ import Artist from "../models/Artist.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadToCloudinary } from "../services/cloudinaryService.js";
 import { validationResult } from "express-validator";
+import Song from "../models/Song.js";
+
+// @route  GET /api/v1/artists/:id/songs
+export const getSongsByArtist = asyncHandler(async (req, res) => {
+  const songs = await Song.find({ artist: req.params.id })
+    .populate("artist", "name image")
+    .populate("album", "title coverImage")
+    .sort({ playCount: -1 });
+
+  res.status(200).json({ success: true, songs });
+});
 
 // @route  POST /api/v1/artists  (admin only)
 export const createArtist = asyncHandler(async (req, res) => {
