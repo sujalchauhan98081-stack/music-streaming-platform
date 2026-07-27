@@ -54,6 +54,7 @@ export const getRecommendations = asyncHandler(async (req, res) => {
     success: true,
     recommendations: matchedSongs,
     aiSuggestions: aiResult.recommendations || [], // raw AI output, in case nothing matched our catalog
+    aiSucceeded: (aiResult.recommendations || []).length > 0,
   });
 });
 
@@ -73,6 +74,7 @@ export const getMoodPlaylist = asyncHandler(async (req, res) => {
     playlistName: aiResult.playlistName || `${mood} Mix`,
     songs: matchedSongs,
     aiSuggestions: aiResult.songs || [],
+    aiSucceeded: (aiResult.songs || []).length > 0, 
   });
 });
 

@@ -51,7 +51,7 @@ export const searchAll = asyncHandler(async (req, res) => {
 export const getTrendingSongs = asyncHandler(async (req, res) => {
   const trending = await Song.find()
     .sort({ playCount: -1 })
-    .limit(20)
+    .limit(5)
     .populate("artist", "name image")
     .populate("album", "title coverImage");
 

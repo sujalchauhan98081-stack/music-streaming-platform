@@ -1,14 +1,23 @@
-import { ChevronLeft, ChevronRight, User, LogOut } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, LogOut, Menu } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
-const Navbar = () => {
+const Navbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-md">
       <div className="flex items-center gap-3">
+        {/* Hamburger — only visible below the md breakpoint, where the sidebar is hidden */}
+        <button
+          onClick={onMenuClick}
+          className="md:hidden p-2 rounded-full bg-surface hover:bg-surfaceHover"
+          title="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+
         <button
           onClick={() => navigate(-1)}
           className="p-2 rounded-full bg-surface hover:bg-surfaceHover"

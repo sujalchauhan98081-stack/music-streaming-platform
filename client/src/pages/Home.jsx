@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { getAllSongsApi } from "../api/songApi";
 import { getLikedSongsApi, toggleLikeSongApi } from "../api/playlistApi";
-import { getRecommendationsApi, getMoodPlaylistApi } from "../api/aiApi";
+import { getMoodPlaylistApi } from "../api/aiApi";
 import { usePlayer } from "../hooks/usePlayer";
 import MoodSelector from "../components/ai/MoodSelector";
 import RecommendationSection from "../components/ai/RecommendationSection";
@@ -16,8 +16,6 @@ const Home = () => {
   const [likedSongIds, setLikedSongIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
 
-  const [recommendations, setRecommendations] = useState([]);
-  const [recommendationSuggestions, setRecommendationSuggestions] = useState([]);
   const [moodPlaylist, setMoodPlaylist] = useState(null);
   const [moodLoading, setMoodLoading] = useState(false);
 
@@ -43,27 +41,16 @@ const Home = () => {
     fetchData();
   }, []);
 
-  // --- Fetch AI recommendations (silent fail — background, non-critical) ---
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const { data } = await getRecommendationsApi();
-        setRecommendations(data.recommendations);
-        setRecommendationSuggestions(data.aiSuggestions || []);
-      } catch (err) {
-        // Silently fail — recommendations are a nice-to-have, not critical to the page loading
-      }
-    };
-    fetchRecommendations();
-  }, []);
-
   // --- Mood playlist generation (user-triggered — show toast on failure) ---
   const handleMoodSelect = async (mood) => {
     setMoodLoading(true);
     try {
       const { data } = await getMoodPlaylistApi(mood);
       setMoodPlaylist(data);
-      if (data.songs.length === 0) {
+
+      if (!data.aiSucceeded) {
+        toast.error("AI couldn't generate a playlist right now — please try a different mood or try again");
+      } else if (data.songs.length === 0) {
         toast("AI generated a mood playlist, but none of those songs are in your library yet", {
           icon: "🎵",
         });
@@ -128,13 +115,6 @@ const Home = () => {
           aiSuggestions={moodPlaylist.aiSuggestions}
         />
       )}
-
-      {/* --- AI "Made For You" Recommendations --- */}
-      <RecommendationSection
-        title="Made For You"
-        songs={recommendations}
-        aiSuggestions={recommendationSuggestions}
-      />
 
       {/* --- All Songs Grid (staggered entrance animation + memoized cards) --- */}
       {songs.length === 0 ? (
